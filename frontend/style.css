@@ -284,6 +284,7 @@ select option {
 
 /* Connection Badge */
 .connection-badge {
+    display: none;
     font-size: 11px;
     font-weight: 700;
     padding: 4px 10px;
