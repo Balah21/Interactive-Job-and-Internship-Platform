@@ -5,7 +5,7 @@
  */
 
 // Connection settings
-const BACKEND_URL = 'http://localhost:5000';
+const BACKEND_URL = 'https://interactive-job-and-internship-platform.onrender.com';
 const API_URL = `${BACKEND_URL}/api`;
 
 // Application State
