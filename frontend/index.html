@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexGen | Interactive Job & Internship Platform</title>
+    <meta name="description" content="Discover premium job opportunities, submit applications, manage profiles, and review talent on our modern dark-themed interactive platform.">
+    <!-- Inter Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    <!-- Notification Overlay -->
+    <div id="toast-container"></div>
+
+    <!-- Sticky Glassmorphic Navbar -->
+    <header class="navbar-header">
+        <nav class="navbar container">
+            <a href="#" class="nav-logo" id="nav-logo-btn">
+                <span class="logo-icon"><i class="fa-solid fa-briefcase"></i></span>
+                <span class="logo-text">Nex<span class="gradient-text">Gen</span></span>
+            </a>
+            
+            <div class="nav-menu" id="nav-menu">
+                <ul class="nav-list">
+                    <li><a href="#" class="nav-link active" data-view="home"><i class="fa-solid fa-house"></i> Home</a></li>
+                    <li class="student-only hidden"><a href="#" class="nav-link" data-view="student-dashboard"><i class="fa-solid fa-user-graduate"></i> My Board</a></li>
+                    <li class="employer-only hidden"><a href="#" class="nav-link" data-view="employer-dashboard"><i class="fa-solid fa-building"></i> Employer Panel</a></li>
+                    <li class="admin-only hidden"><a href="#" class="nav-link" data-view="admin-dashboard"><i class="fa-solid fa-user-shield"></i> Admin Panel</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-actions">
+                <div id="connection-badge" class="connection-badge offline" title="Backend Server Status">
+                    Backend Connection Required
+                </div>
+                <div id="user-profile-badge" class="hidden">
+                    <span class="user-name-display"></span >
+                    <span class="user-role-badge">Student</span>
+                </div>
+                <button class="btn btn-primary" id="login-nav-btn"><i class="fa-solid fa-right-to-bracket"></i> Sign In</button>
+                <button class="btn btn-secondary hidden" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+                <button class="menu-toggle" id="menu-toggle-btn" aria-label="Toggle menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- ============================================== -->
+        <!-- VIEW: HOME / JOB LISTINGS                      -->
+        <!-- ============================================== -->
+        <section id="home-view" class="view-section active">
+            <!-- Hero Landing Section -->
+            <div class="hero-section">
+                <div class="container hero-container">
+                    <div class="hero-content">
+                        <div class="hero-tagline">🚀 Empowering Tomorrow's Careers</div>
+                        <h1 class="hero-title">Find Your Next <span class="gradient-text">Dream Opportunity</span></h1>
+                        <p class="hero-description">Discover premium jobs, internships, and growth pathways. Connect directly with forward-thinking employers and accelerate your professional journey.</p>
+                        
+                        <!-- Search & Filter bar -->
+                        <div class="search-bar-container">
+                            <div class="search-input-wrapper">
+                                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                <input type="text" id="search-job-title" placeholder="Job Title, Skills, or Keywords...">
+                            </div>
+                            <div class="filter-wrapper">
+                                <i class="fa-solid fa-location-dot search-icon"></i>
+                                <input type="text" id="search-location" placeholder="City or 'Remote'">
+                            </div>
+                            <button class="btn btn-primary" id="jobs-search-btn"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                        </div>
+
+                        <!-- Statistics Grid -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <h3 class="stat-value" id="stat-total-jobs">0</h3>
+                                <p class="stat-label">Active Listings</p>
+                            </div>
+                            <div class="stat-card">
+                                <h3 class="stat-value" id="stat-companies">0</h3>
+                                <p class="stat-label">Verified Employers</p>
+                            </div>
+                            <div class="stat-card">
+                                <h3 class="stat-value" id="stat-students">0</h3>
+                                <p class="stat-label">Candidates Seeding</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job board Filters and Listings -->
+            <div class="job-board-container container">
+                <div class="section-header">
+                    <div class="section-title-wrap">
+                        <span class="sub-title">Explore Jobs</span>
+                        <h2 class="section-title">Latest Opportunities</h2>
+                    </div>
+                    <div class="job-filters-pills">
+                        <button class="filter-pill active" data-type="all">All Jobs</button>
+                        <button class="filter-pill" data-type="Full-time">Full-Time</button>
+                        <button class="filter-pill" data-type="Part-time">Part-Time</button>
+                        <button class="filter-pill" data-type="Remote">Remote</button>
+                        <button class="filter-pill" data-type="Internship">Internships</button>
+                    </div>
+                </div>
+
+                <!-- Main Listings Area -->
+                <div class="job-listings-wrapper">
+                    <!-- Sidebar filters (Advanced) -->
+                    <aside class="job-sidebar-filters">
+                        <div class="filter-block">
+                            <h4 class="filter-title">Salary Range</h4>
+                            <div class="range-inputs">
+                                <input type="number" id="min-salary-filter" placeholder="Min">
+                                <span class="range-separator">-</span>
+                                <input type="number" id="max-salary-filter" placeholder="Max">
+                            </div>
+                        </div>
+                        <div class="filter-block">
+                            <h4 class="filter-title">Reset Filter</h4>
+                            <button class="btn btn-secondary btn-full" id="reset-all-filters-btn">Clear All</button>
+                        </div>
+                    </aside>
+
+                    <!-- Listings Grid -->
+                    <div class="jobs-list-container">
+                        <div class="jobs-loading" id="jobs-loader">
+                            <div class="spinner"></div>
+                            <p>Fetching curated job listings...</p>
+                        </div>
+                        <div class="no-jobs-found hidden" id="no-jobs-card">
+                            <i class="fa-solid fa-folder-open empty-icon"></i>
+                            <h3>No Listings Found</h3>
+                            <p>Try refining your search text or application filters.</p>
+                        </div>
+                        <div class="jobs-grid" id="jobs-grid-root">
+                            <!-- Injected dynamically via app.js -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW: AUTHENTICATION (LOGIN / SIGNUP)          -->
+        <!-- ============================================== -->
+        <section id="auth-view" class="view-section">
+            <div class="container auth-container">
+                <div class="auth-card glass-panel">
+                    <div class="auth-tabs">
+                        <button class="auth-tab active" id="tab-login-btn">Login</button>
+                        <button class="auth-tab" id="tab-register-btn">Register</button>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="login-form" class="auth-form">
+                        <h2 class="auth-title">Welcome Back</h2>
+                        <p class="auth-subtitle">Log in to manage your professional postings or application pipeline.</p>
+                        
+                        <div class="form-group">
+                            <label for="login-email">Email Address</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-envelope field-icon"></i>
+                                <input type="email" id="login-email" required placeholder="name@domain.com">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-lock field-icon"></i>
+                                <input type="password" id="login-password" required placeholder="••••••••">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-full"><i class="fa-solid fa-right-to-bracket"></i> Authenticate Credentials</button>
+                    </form>
+
+                    <!-- Register Form -->
+                    <form id="register-form" class="auth-form hidden">
+                        <h2 class="auth-title">Create Account</h2>
+                        <p class="auth-subtitle">Join us today to jumpstart applications or discover skilled workers.</p>
+
+                        <div class="form-group">
+                            <label for="register-name">Full Name</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-user field-icon"></i>
+                                <input type="text" id="register-name" required placeholder="John Doe">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="register-email">Email Address</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-envelope field-icon"></i>
+                                <input type="email" id="register-email" required placeholder="name@domain.com">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="register-role">Aspirant / Role Type</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-users field-icon"></i>
+                                <select id="register-role" required>
+                                    <option value="student">Student (Job Seeker)</option>
+                                    <option value="employer">Employer (Job Creator)</option>
+                                    <option value="admin">Administrator (Moderator)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="register-password">Password</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-lock field-icon"></i>
+                                <input type="password" id="register-password" required placeholder="Min 6 characters">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-full"><i class="fa-solid fa-user-plus"></i> Initialize Account</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW: STUDENT DASHBOARD                        -->
+        <!-- ============================================== -->
+        <section id="student-dashboard-view" class="view-section">
+            <div class="container dashboard-container">
+                <div class="dashboard-sidebar">
+                    <div class="profile-summary-card glass-panel">
+                        <div class="profile-avatar"><i class="fa-solid fa-user-graduate"></i></div>
+                        <h3 class="user-fullname">Loading Name...</h3>
+                        <p class="user-email-text">Loading Email...</p>
+                        <div class="dashboard-badge label-student">Student Account</div>
+                    </div>
+
+                    <div class="profile-resume-card glass-panel">
+                        <h3>Resume Document</h3>
+                        <p class="card-desc-text">Upload your technical resume dynamically. Only PDF files up to 5MB are processed.</p>
+                        
+                        <div id="resume-status-box" class="resume-badge offline">
+                            <i class="fa-solid fa-triangle-exclamation"></i> No Resume Uploaded
+                        </div>
+
+                        <form id="resume-upload-form" class="resume-upload-zone">
+                            <label for="resume-file-input" class="upload-dropzone">
+                                <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                                <span class="upload-text">Click to choose PDF</span>
+                                <span class="upload-subtext">Max 5MB</span>
+                                <input type="file" id="resume-file-input" accept=".pdf" required>
+                            </label>
+                            <button type="submit" class="btn btn-primary btn-full hidden" id="upload-resume-btn">
+                                <i class="fa-solid fa-upload"></i> Upload Selected File
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="dashboard-main-content">
+                    <div class="glass-panel profile-edit-panel">
+                        <div class="panel-header">
+                            <h2><i class="fa-solid fa-user-gear"></i> Manage Profile Information</h2>
+                            <button type="button" class="btn btn-primary" id="save-profile-btn"><i class="fa-solid fa-floppy-disk"></i> Save Profile</button>
+                        </div>
+
+                        <form id="student-profile-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="profile-skills">Skills (comma-separated)</label>
+                                    <input type="text" id="profile-skills" placeholder="JavaScript, Node.js, React, MongoDB">
+                                </div>
+                                <div class="form-group">
+                                    <label for="profile-education">Highest Education / Degree</label>
+                                    <input type="text" id="profile-education" placeholder="B.S. in Computer Science">
+                                </div>
+                            </div>
+
+                            <div class="form-group margin-top-md">
+                                <label for="profile-experience">Experience Description</label>
+                                <textarea id="profile-experience" rows="4" placeholder="Briefly describe your previous internships, projects, or work experiences..."></textarea>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Submitted Applications list -->
+                    <div class="glass-panel margin-top-lg">
+                        <div class="panel-header">
+                            <h2><i class="fa-solid fa-file-invoice"></i> My Job Applications</h2>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table class="data-table" id="student-applications-table">
+                                <thead>
+                                    <tr>
+                                        <th>Job Title</th>
+                                        <th>Company</th>
+                                        <th>Applied On</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="student-applications-tbody">
+                                    <!-- Injected dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW: EMPLOYER DASHBOARD                       -->
+        <!-- ============================================== -->
+        <section id="employer-dashboard-view" class="view-section">
+            <div class="container dashboard-container">
+                <div class="dashboard-sidebar">
+                    <div class="profile-summary-card glass-panel">
+                        <div class="profile-avatar"><i class="fa-solid fa-building"></i></div>
+                        <h3 class="user-fullname">Loading Name...</h3>
+                        <p class="user-email-text">Loading Email...</p>
+                        <div class="dashboard-badge label-employer">Employer Account</div>
+                    </div>
+
+                    <!-- Post a job quick button -->
+                    <button class="btn btn-primary btn-full margin-top-md" id="show-post-job-modal-btn">
+                        <i class="fa-solid fa-plus"></i> Post a New Job Listing
+                    </button>
+                </div>
+
+                <div class="dashboard-main-content">
+                    <div class="glass-panel">
+                        <div class="panel-header">
+                            <h2><i class="fa-solid fa-list-check"></i> My Posted Opportunities</h2>
+                        </div>
+
+                        <div class="table-container">
+                            <table class="data-table" id="employer-jobs-table">
+                                <thead>
+                                    <tr>
+                                        <th>Job Title</th>
+                                        <th>Type</th>
+                                        <th>Salary</th>
+                                        <th>Status</th>
+                                        <th>Applicants</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="employer-jobs-tbody">
+                                    <!-- Injected dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW: ADMIN DASHBOARD                          -->
+        <!-- ============================================== -->
+        <section id="admin-dashboard-view" class="view-section">
+            <div class="container dashboard-container admin-grid-container">
+                <div class="admin-top-stats col-span-2">
+                    <div class="glance-stats-grid">
+                        <div class="glass-panel stat-box">
+                            <span class="stat-box-icon"><i class="fa-solid fa-users"></i></span>
+                            <div class="stat-box-info">
+                                <h3 id="admin-stat-total-users">0</h3>
+                                <p>Total Registered Users</p>
+                            </div>
+                        </div>
+                        <div class="glass-panel stat-box">
+                            <span class="stat-box-icon"><i class="fa-solid fa-briefcase"></i></span>
+                            <div class="stat-box-info">
+                                <h3 id="admin-stat-total-jobs">0</h3>
+                                <p>Total Opportunities</p>
+                            </div>
+                        </div>
+                        <div class="glass-panel stat-box">
+                            <span class="stat-box-icon"><i class="fa-solid fa-file-signature"></i></span>
+                            <div class="stat-box-info">
+                                <h3 id="admin-stat-total-applications">0</h3>
+                                <p>Total Application Records</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin: Job Approval Section -->
+                <div class="glass-panel col-span-1">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-clock-rotate-left"></i> Pending Approvals</h2>
+                    </div>
+                    <div class="admin-approvals-list" id="admin-pending-jobs-list">
+                        <!-- Injected dynamically -->
+                    </div>
+                </div>
+
+                <!-- Admin: User management panel -->
+                <div class="glass-panel col-span-1">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-users-gear"></i> System User Directories</h2>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table scroll-table" id="admin-users-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-users-tbody">
+                                <!-- Injected dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ============================================== -->
+    <!-- MODAL: POST A JOB (EMPLOYER ONLY)              -->
+    <!-- ============================================== -->
+    <div class="modal-overlay" id="post-job-modal">
+        <div class="modal-card glass-panel">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-briefcase"></i> Post an Opportunity</h2>
+                <button class="modal-close" id="close-post-job-btn">&times;</button>
+            </div>
+            <form id="post-job-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="job-title-input">Job/Internship Title</label>
+                        <input type="text" id="job-title-input" required placeholder="e.g. Back-End Engineer Intern">
+                    </div>
+                    <div class="form-group">
+                        <label for="job-company-input">Company Name</label>
+                        <input type="text" id="job-company-input" required placeholder="e.g. Google">
+                    </div>
+                </div>
+                
+                <div class="form-grid margin-top-md">
+                    <div class="form-group">
+                        <label for="job-location-input">Location</label>
+                        <input type="text" id="job-location-input" required placeholder="e.g. Bangalore, India / Remote">
+                    </div>
+                    <div class="form-group">
+                        <label for="job-type-input">Employ Classification</label>
+                        <select id="job-type-input" required>
+                            <option value="Full-time">Full-Time</option>
+                            <option value="Part-time">Part-Time</option>
+                            <option value="Remote">Remote</option>
+                            <option value="Internship">Internship</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid margin-top-md">
+                    <div class="form-group">
+                        <label for="job-salary-input">Expected Compensation (Monthly/Annual)</label>
+                        <input type="number" id="job-salary-input" required placeholder="e.g. 600000">
+                    </div>
+                    <div class="form-group">
+                        <label for="job-skills-input">Required Skills (comma-separated)</label>
+                        <input type="text" id="job-skills-input" required placeholder="e.g. Node.js, Express, MongoDB">
+                    </div>
+                </div>
+
+                <div class="form-group margin-top-md">
+                    <label for="job-desc-input">Comprehensive Description</label>
+                    <textarea id="job-desc-input" rows="4" required placeholder="Detailed role requirements, responsibilities, and benefits..."></textarea>
+                </div>
+
+                <div class="modal-footer margin-top-lg">
+                    <button type="button" class="btn btn-secondary" id="cancel-post-job-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Publish Job Posting</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- MODAL: JOB DETAILS VIEW                        -->
+    <!-- ============================================== -->
+    <div class="modal-overlay" id="job-details-modal">
+        <div class="modal-card glass-panel" id="job-details-card">
+            <!-- Inject dynamically from template -->
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- MODAL: VIEW APPLICATIONS FOR JOB (EMPLOYER)    -->
+    <!-- ============================================== -->
+    <div class="modal-overlay" id="view-applicants-modal">
+        <div class="modal-card glass-panel modal-lg">
+            <div class="modal-header">
+                <h2 id="applicants-modal-title"><i class="fa-solid fa-user-tie"></i> Applicants for Role</h2>
+                <button class="modal-close" id="close-applicants-btn">&times;</button>
+            </div>
+            <div class="applicants-modal-body">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Applicant Name</th>
+                                <th>Email</th>
+                                <th>Skills</th>
+                                <th>Resume</th>
+                                <th>Status</th>
+                                <th>Review Choices</th>
+                            </tr>
+                        </thead>
+                        <tbody id="job-applicants-tbody">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Footer styling -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; 2026 NexGen Job Board. Made with vanilla CSS & JS connected dynamically to Node.js backend.</p>
+        </div>
+    </footer>
+
+    <!-- Core App Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>
